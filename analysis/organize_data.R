@@ -13,5 +13,6 @@ huizui <- read_excel("input/Huizui.xlsx")
 #source in any useful functions
 source("useful_functions.R")
 
-huizui <- huizui[,apply(is.na(huizui), 2, mean)<1
 huizui <- subset(huizui, select=apply(is.na(huizui), 2, mean)<1)
+huizui[,17:ncol(huizui)][is.na(huizui[,17:ncol(huizui)])] <- 0
+huizui$`Millet %` <- 100 * huizui$`Millet %`
