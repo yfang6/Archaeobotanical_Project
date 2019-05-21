@@ -7,7 +7,8 @@
 # the analytical dataset, and then write the analytical data to the output directory.
 
 # Loads data into R
-huizui <- read.csv("analysis/input/Huizui.csv")
+library(readxl)
+huizui <- read_excel("input/Huizui.xlsx")
 
 #source in any useful functions
 source("useful_functions.R")
