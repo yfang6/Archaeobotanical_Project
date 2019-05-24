@@ -6,13 +6,38 @@
 # This script will read in raw data from the input directory, clean it up to produce 
 # the analytical dataset, and then write the analytical data to the output directory.
 
-# Loads data into R
+# Load data into R
 library(readxl)
 huizui <- read_excel("input/Huizui.xlsx")
 
-#source in any useful functions
+# source in any useful functions
 source("useful_functions.R")
 
+# Delete columns with only NAs.
 huizui <- subset(huizui, select=apply(is.na(huizui), 2, mean)<1)
-huizui[,17:ncol(huizui)][is.na(huizui[,17:ncol(huizui)])] <- 0
-huizui$`Millet %` <- 100 * huizui$`Millet %`
+
+# Substitute NAs with 0s for quantitative columns
+huizui[,6:ncol(huizui)][is.na(huizui[,6:ncol(huizui)])] <- 0
+
+# Subset Huizui to only contain useful variables
+huizui <- subset(huizui, select = c(4:6, 8:16))
+
+# Change column names
+names(huizui) <- c("Period", "FeatureType", "LightFractionWt", "Vol", 
+                   "TotalSeedNo", "TotalSeedDensity", "Millets",
+                   "LuxuryCereal", "Bean", "Millet%", "LC%", "Bean%")
+
+# Change millet, LC, and bean proportions into percentages
+huizui$`Millet%` <- 100 * huizui$`Millet%`
+huizui$`LC%` <- 100 * huizui$`LC%`
+huizui$`Bean%` <- 100 * huizui$`Bean%`
+
+# Standardize periods
+huizui$Period[huizui$Period == "Late Yangshao" | huizui$Period == "Mid/L Yangshao"] <- "Yangshao"
+huizui$Period[huizui$Period == "Late Longshan"] <- "Longshan"
+
+# Round data in certain columns
+huizui[,c(3:4, 6, 10:12)] <- round(huizui[,c(3:4, 6, 10:12)], 2)
+
+# Save huizui in the output directory
+save(huizui, file="output/analytical_data.RData")
