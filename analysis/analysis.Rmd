@@ -64,6 +64,9 @@ boxplot(huizui$TotalSeedDensity ~ huizui$Period, main = "Total Seed Density by P
 boxplot(huizui$TotalSeedDensity ~ huizui$FeatureType, main = "Total Seed Density by Feature Types", xlab = "Feature Types", ylab = "Total Seed Density (#/L)", col = rainbow(6))
 ```
 
+```{r poisson-model, echo=FALSE}
+model <- glm(TotalSeedNo~Period, family=poisson, offset=log(Vol), data=huizui)
+```
 
 # Introduction
 <a href="#top">Back to top</a>
