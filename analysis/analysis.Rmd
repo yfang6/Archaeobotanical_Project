@@ -9,9 +9,61 @@ output:
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE, fig.align = "center")
 source("useful_functions.R")
+load("output/analytical_data.RData")
+library(ggplot2)
+library(texreg)
 ```
+
+# Add several new variables
+
+```{r densities, include=FALSE}
+huizui$MilletDensity <- huizui$Millets / huizui$Vol
+huizui$LCDensity <- huizui$LuxuryCereal / huizui$Vol
+huizui$BeanDensity <- huizui$Bean / huizui$Vol
+```
+
+# Univariate distributions
+
+```{r period, fig.cap="Distribution of period"}
+ggplot(huizui, aes(x=Period, y=..prop.., group=1))+
+  geom_bar()+
+  theme_bw()
+```
+
+```{r feature_type, fig.cap="Distribution of Feature Type"}
+ggplot(huizui, aes(x=FeatureType, y=..prop.., group=1))+
+  geom_bar()+
+  theme_bw()
+```
+
+```{r total_seed_density, fig.cap="Boxplot of Total Seed Density"}
+boxplot(huizui$TotalSeedDensity, col = "royalblue")
+```
+
+```{r millet_density, fig.cap="Boxplot of Millet Density"}
+boxplot(huizui$MilletDensity, col = "royalblue")
+```
+
+```{r LC_density, fig.cap="Boxplot of Luxury Cereal Density"}
+boxplot(huizui$LCDensity, col = "royalblue")
+```
+
+```{r bean_density, fig.cap="Boxplot of Bean Density"}
+boxplot(huizui$BeanDensity, col = "royalblue")
+```
+
+# Bivariate plots
+
+```{r totalDensity_period, echo=FALSE}
+boxplot(huizui$TotalSeedDensity ~ huizui$Period, main = "Total Seed Density by Periods", xlab = "Periods", ylab = "Total Seed Density (#/L)", col = rainbow(4))
+```
+
+```{r totalDensity_featureType, echo=FALSE}
+boxplot(huizui$TotalSeedDensity ~ huizui$FeatureType, main = "Total Seed Density by Feature Types", xlab = "Feature Types", ylab = "Total Seed Density (#/L)", col = rainbow(6))
+```
+
 
 # Introduction
 <a href="#top">Back to top</a>
