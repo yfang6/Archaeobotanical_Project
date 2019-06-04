@@ -25,12 +25,12 @@ huizui <- subset(huizui, select = c(4:6, 8:16))
 # Change column names
 names(huizui) <- c("Period", "FeatureType", "LightFractionWt", "Vol", 
                    "TotalSeedNo", "TotalSeedDensity", "Millets",
-                   "LuxuryCereal", "Bean", "Millet%", "LC%", "Bean%")
+                   "LuxuryCereal", "Bean", "MilletPct", "LCPct", "BeanPct")
 
 # Change millet, LC, and bean proportions into percentages
-huizui$`Millet%` <- 100 * huizui$`Millet%`
-huizui$`LC%` <- 100 * huizui$`LC%`
-huizui$`Bean%` <- 100 * huizui$`Bean%`
+huizui$`MilletPct` <- 100 * huizui$`MilletPct`
+huizui$`LCPct` <- 100 * huizui$`LCPct`
+huizui$`BeanPct` <- 100 * huizui$`BeanPct`
 
 # Standardize periods
 huizui$Period[huizui$Period == "Late Yangshao" | huizui$Period == "Mid/L Yangshao"] <- "Yangshao"
