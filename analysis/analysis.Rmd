@@ -13,62 +13,189 @@ knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE, fig.align =
 source("useful_functions.R")
 load("output/analytical_data.RData")
 library(ggplot2)
+library(scales)
 library(texreg)
 ```
 
-# Add several new variables
-
-```{r densities, include=FALSE}
-huizui$MilletDensity <- huizui$Millets / huizui$Vol
-huizui$LCDensity <- huizui$LuxuryCereal / huizui$Vol
-huizui$BeanDensity <- huizui$Bean / huizui$Vol
-```
-
 # Univariate distributions
+<a href="#top">Back to top</a>
 
-```{r period, fig.cap="Distribution of period"}
+```{r period, echo=FALSE}
 ggplot(huizui, aes(x=Period, y=..prop.., group=1))+
   geom_bar()+
+  scale_y_continuous(labels = scales::percent)+
+  labs(x="Periods", y=NULL,
+       title = "Distribution of Periods")+
   theme_bw()
 ```
 
-```{r feature_type, fig.cap="Distribution of Feature Type"}
+```{r feature_type, echo=FALSE}
 ggplot(huizui, aes(x=FeatureType, y=..prop.., group=1))+
   geom_bar()+
+  scale_y_continuous(labels = scales::percent)+
+  labs(x="Feature Types", y=NULL,
+       title = "Distribution of Feature Types")+
   theme_bw()
 ```
 
-```{r total_seed_density, fig.cap="Boxplot of Total Seed Density"}
-boxplot(huizui$TotalSeedDensity, col = "royalblue")
+```{r total_seed_density, echo=FALSE}
+ggplot(huizui, aes(y=TotalSeedDensity))+
+  geom_boxplot(fill="grey", outlier.color = "red")+
+  labs(y="Total Seed Density (#/L)",
+       title="Boxplot of Total Seed Density")+
+  theme_bw()
 ```
 
-```{r millet_density, fig.cap="Boxplot of Millet Density"}
-boxplot(huizui$MilletDensity, col = "royalblue")
+```{r millet_density, echo=FALSE}
+ggplot(huizui, aes(y=MilletDensity))+
+  geom_boxplot(fill="grey", outlier.color = "red")+
+  labs(y="Millet Density (#/L)",
+       title="Boxplot of Millet Density")+
+  theme_bw()
 ```
 
-```{r LC_density, fig.cap="Boxplot of Luxury Cereal Density"}
-boxplot(huizui$LCDensity, col = "royalblue")
+```{r LC_density, echo=FALSE}
+ggplot(huizui, aes(y=LCDensity))+
+  geom_boxplot(fill="grey", outlier.color = "red")+
+  labs(y="Luxury Cereal Density (#/L)",
+       title="Boxplot of Luxury Cereal Density")+
+  theme_bw()
 ```
 
-```{r bean_density, fig.cap="Boxplot of Bean Density"}
-boxplot(huizui$BeanDensity, col = "royalblue")
+```{r bean_density, echo=FALSE}
+ggplot(huizui, aes(y=BeanDensity))+
+  geom_boxplot(fill="grey", outlier.color = "red")+
+  labs(y="Bean Density (#/L)",
+       title="Boxplot of Bean Density")+
+  theme_bw()
 ```
 
 # Bivariate plots
+<a href="#top">Back to top</a>
 
 ```{r totalDensity_period, echo=FALSE}
-boxplot(huizui$TotalSeedDensity ~ huizui$Period, main = "Total Seed Density by Periods", xlab = "Periods", ylab = "Total Seed Density (#/L)", col = rainbow(4))
+boxplot(huizui$TotalSeedDensity ~ huizui$Period, main = "Total Seed Density by Periods", xlab = "Periods", ylab = "Total Seed Density (#/L)", col = rainbow(3))
+```
+
+```{r milletDensity_period, echo=FALSE}
+boxplot(huizui$MilletDensity ~ huizui$Period, main = "Millet Density by Periods", xlab = "Periods", ylab = "Millet Density (#/L)", col = rainbow(3))
+```
+
+```{r LC_period, echo=FALSE}
+boxplot(huizui$LCDensity ~ huizui$Period, main = "Luxury Cereal Density by Periods", xlab = "Periods", ylab = "Luxury Cereal Density (#/L)", col = rainbow(3))
+```
+
+```{r beanDensity_period, echo=FALSE}
+boxplot(huizui$BeanDensity ~ huizui$Period, main = "Bean Density by Periods", xlab = "Periods", ylab = "Bean Density (#/L)", col = rainbow(3))
 ```
 
 ```{r totalDensity_featureType, echo=FALSE}
-boxplot(huizui$TotalSeedDensity ~ huizui$FeatureType, main = "Total Seed Density by Feature Types", xlab = "Feature Types", ylab = "Total Seed Density (#/L)", col = rainbow(6))
+boxplot(huizui$TotalSeedDensity ~ huizui$FeatureType, main = "Total Seed Density by Feature Types", xlab = "Feature Types", ylab = "Total Seed Density (#/L)", col = rainbow(3))
 ```
 
-```{r poisson-model, echo=FALSE}
-model <- glm(TotalSeedNo~Period, family=poisson, offset=log(Vol), data=huizui)
+```{r milletDensity_featureType, echo=FALSE}
+boxplot(huizui$MilletDensity ~ huizui$FeatureType, main = "Millet Density by Feature Types", xlab = "Feature Types", ylab = "Millet Density (#/L)", col = rainbow(3))
 ```
 
-# Introduction
+```{r LCDensity_featureType, echo=FALSE}
+boxplot(huizui$LCDensity ~ huizui$FeatureType, main = "Luxury Cereal Density by Feature Types", xlab = "Feature Types", ylab = "Luxury Cereal Density (#/L)", col = rainbow(3))
+```
+
+```{r beanDensity_featureType, echo=FALSE}
+boxplot(huizui$BeanDensity ~ huizui$FeatureType, main = "Bean Density by Feature Types", xlab = "Feature Types", ylab = "Bean Density (#/L)", col = rainbow(3))
+```
+
+# Poisson models
 <a href="#top">Back to top</a>
 
-Use this R Markdown to perform the main analysis for the project. I use this basically as a lab notebook. It contains the main analysis and a variety of sensitivity analysis. The code in this documents serves as a baseline for the eventual tables and figures that will go into the paper. At the same time it will serve as a record of all supplementary analyses performed. 
+```{r total_density_models, echo=FALSE, results="asis"}
+total1 <- glm(TotalSeedNo~Period, family=poisson, offset=log(Vol), data=huizui)
+
+total2 <- glm(TotalSeedNo~FeatureType, family=poisson, offset=log(Vol), data=huizui)
+
+total3 <- glm(TotalSeedNo~Period+FeatureType, family=poisson, offset=log(Vol), data=huizui)
+
+total4 <- glm(TotalSeedNo~Period*FeatureType, family=poisson, offset=log(Vol), data=huizui)
+
+htmlreg(list(total1, total2, total3, total4),
+          custom.coef.names = c("Intercept",
+                             "Longshan Period",
+                             "Yangshao Period",
+                             "Ditch",
+                             "House",
+                             "Yangshao:Ditch",
+                             "Longshan:House",
+                             "Yangshao:House"),
+          caption="Poisson models of total seed densities by period and feature types",
+          caption.above = TRUE)
+       
+```
+
+```{r millet_density_models, echo=FALSE, results="asis"}
+millet1 <- glm(Millets~Period, family=poisson, offset=log(Vol), data=huizui)
+
+millet2 <- glm(Millets~FeatureType, family=poisson, offset=log(Vol), data=huizui)
+
+millet3 <- glm(Millets~Period+FeatureType, family=poisson, offset=log(Vol), data=huizui)
+
+millet4 <- glm(Millets~Period*FeatureType, family=poisson, offset=log(Vol), data=huizui)
+
+htmlreg(list(millet1, millet2, millet3, millet4),
+          custom.coef.names = c("Intercept",
+                             "Longshan Period",
+                             "Yangshao Period",
+                             "Ditch",
+                             "House",
+                             "Yangshao:Ditch",
+                             "Longshan:House",
+                             "Yangshao:House"),
+          caption="Poisson models of millet densities by period and feature types",
+          caption.above = TRUE)
+       
+```
+
+```{r LC_density_models, echo=FALSE, results="asis"}
+LC1 <- glm(LuxuryCereal~Period, family=poisson, offset=log(Vol), data=huizui)
+
+LC2 <- glm(LuxuryCereal~FeatureType, family=poisson, offset=log(Vol), data=huizui)
+
+LC3 <- glm(LuxuryCereal~Period+FeatureType, family=poisson, offset=log(Vol), data=huizui)
+
+LC4 <- glm(LuxuryCereal~Period*FeatureType, family=poisson, offset=log(Vol), data=huizui)
+
+htmlreg(list(LC1, LC2, LC3, LC4),
+          custom.coef.names = c("Intercept",
+                             "Longshan Period",
+                             "Yangshao Period",
+                             "Ditch",
+                             "House",
+                             "Yangshao:Ditch",
+                             "Longshan:House",
+                             "Yangshao:House"),
+          caption="Poisson models of luxury cereal densities by period and feature types",
+          caption.above = TRUE)
+       
+```
+
+```{r bean_density_models, echo=FALSE, results="asis"}
+bean1 <- glm(Bean~Period, family=poisson, offset=log(Vol), data=huizui)
+
+bean2 <- glm(Bean~FeatureType, family=poisson, offset=log(Vol), data=huizui)
+
+bean3 <- glm(Bean~Period+FeatureType, family=poisson, offset=log(Vol), data=huizui)
+
+bean4 <- glm(Bean~Period*FeatureType, family=poisson, offset=log(Vol), data=huizui)
+
+htmlreg(list(bean1, bean2, bean3, bean4),
+          custom.coef.names = c("Intercept",
+                             "Longshan Period",
+                             "Yangshao Period",
+                             "Ditch",
+                             "House",
+                             "Yangshao:Ditch",
+                             "Longshan:House",
+                             "Yangshao:House"),
+          caption="Poisson models of bean densities by period and feature types",
+          caption.above = TRUE)
+       
+```

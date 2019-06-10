@@ -39,5 +39,22 @@ huizui$Period[huizui$Period == "Late Longshan"] <- "Longshan"
 # Round data in certain columns
 huizui[,c(3:4, 6, 10:12)] <- round(huizui[,c(3:4, 6, 10:12)], 2)
 
+# Add several new variables
+huizui$MilletDensity <- huizui$Millets / huizui$Vol
+huizui$LCDensity <- huizui$LuxuryCereal / huizui$Vol
+huizui$BeanDensity <- huizui$Bean / huizui$Vol
+
+# Delete periods and feature types that have only one or two observations
+table(huizui$Period)
+which(huizui$Period == "Majiayao")
+huizui <- huizui[-c(6), ]
+
+table(huizui$FeatureType)
+which(huizui$FeatureType == "Burial" | huizui$FeatureType == "Cultural Layer" | huizui$FeatureType == "Hearth")
+huizui <- huizui[-c(13, 14, 25, 81), ]
+
+# Reorganize Periods chronologically
+huizui$Period <- factor(huizui$Period, levels = c("Yangshao", "Longshan", "Erlitou"))
+
 # Save huizui in the output directory
 save(huizui, file="output/analytical_data.RData")
