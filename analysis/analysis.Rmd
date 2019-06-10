@@ -20,6 +20,8 @@ library(texreg)
 # Univariate distributions
 <a href="#top">Back to top</a>
 
+I created barplots to display the distributions of periods and feature types, as well as boxplots of total seed density, millet density, luxury cereal density, and bean density. 
+
 ```{r period, echo=FALSE}
 ggplot(huizui, aes(x=Period, y=..prop.., group=1))+
   geom_bar()+
@@ -28,6 +30,8 @@ ggplot(huizui, aes(x=Period, y=..prop.., group=1))+
        title = "Distribution of Periods")+
   theme_bw()
 ```
+
+This barplot shows that there are three periods where the seeds are from--Yangshao, Longshan, and Erlitou. Most seed samples are from the Erlitou period (more than 80%). Yangshao and Longshan seeds constitute less than 10% of total seeds respectively, Yangshao seeds being the smallest proportion among those from the three periods. 
 
 ```{r feature_type, echo=FALSE}
 ggplot(huizui, aes(x=FeatureType, y=..prop.., group=1))+
@@ -38,6 +42,8 @@ ggplot(huizui, aes(x=FeatureType, y=..prop.., group=1))+
   theme_bw()
 ```
 
+This barplot shows that among the three feature types, ash pits are the most common one, representing more than half of all seed samples. Approximately 40% of seed samples are found in houses, which is the second largest feature type. Slightly less than 15% of all seed samples are from ditches.
+
 ```{r total_seed_density, echo=FALSE}
 ggplot(huizui, aes(y=TotalSeedDensity))+
   geom_boxplot(fill="grey", outlier.color = "red")+
@@ -45,6 +51,8 @@ ggplot(huizui, aes(y=TotalSeedDensity))+
        title="Boxplot of Total Seed Density")+
   theme_bw()
 ```
+
+This boxplot shows that the total seed densities of all seed samples has a median of ~5.5 #/L, a 1st quartile of ~3 #/L, and a 3rd Quartile of ~13 #/L. The minimum is 0 which means there is/are sample(s) with no seed found. There are several outliers with extremly large numbers of seeds found per liter of the samples, the largest reaching 60 #/L.
 
 ```{r millet_density, echo=FALSE}
 ggplot(huizui, aes(y=MilletDensity))+
@@ -54,6 +62,8 @@ ggplot(huizui, aes(y=MilletDensity))+
   theme_bw()
 ```
 
+This boxplot shows that the millet seed densities of all seed samples have a median of ~1.5 #/L, a 1st quartile of ~0.5 #/L, and a 3rd Quartile of ~4.5 #/L. The minimum is 0 which means there is/are sample(s) with no millet found. There are several outliers, the maximum reaching 36 #/L.
+
 ```{r LC_density, echo=FALSE}
 ggplot(huizui, aes(y=LCDensity))+
   geom_boxplot(fill="grey", outlier.color = "red")+
@@ -62,6 +72,8 @@ ggplot(huizui, aes(y=LCDensity))+
   theme_bw()
 ```
 
+This boxplot shows that the luxury cereal densities are obviously lower than millet densities. The luxury creal densities of all seed samples have a minimum, a 1st quartile and a median of 0 #/L, which means there are a considerable amount (at least 50%) of seed samples with no luxury cereal seed found. The LC densities have a 3rd quartile of ~0.1 #/L and there are several outliers. About 9 samples have LC densities from 0.25 to 1 #/L, and the maximum reaches 2.2 #/L.
+
 ```{r bean_density, echo=FALSE}
 ggplot(huizui, aes(y=BeanDensity))+
   geom_boxplot(fill="grey", outlier.color = "red")+
@@ -69,6 +81,8 @@ ggplot(huizui, aes(y=BeanDensity))+
        title="Boxplot of Bean Density")+
   theme_bw()
 ```
+
+This boxplot shows that the bean densities seem to be between millet densities and the luxury cereal densities. The bean densities of all seed samples have a 1st quartile and a minimum of 0 #/L, which means at least 25% of all seed samples have no bean found. The bean densities have a 3rd quartile of ~0.45 #/L and there are several outliers. More than 10 samples have bean densities from 1 to 4 #/L, and the maximum almost reaches 5 #/L.
 
 # Bivariate plots
 <a href="#top">Back to top</a>
