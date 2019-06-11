@@ -88,7 +88,16 @@ This boxplot shows that the bean densities seem to be between millet densities a
 <a href="#top">Back to top</a>
 
 ```{r totalDensity_period, echo=FALSE}
-boxplot(huizui$TotalSeedDensity ~ huizui$Period, main = "Total Seed Density by Periods", xlab = "Periods", ylab = "Total Seed Density (#/L)", col = rainbow(3))
+temp <- rbind(data.frame(period=huizui$Period, density=huizui$TotalSeedDensity, seed_type="Total"),
+              data.frame(period=huizui$Period, density=huizui$MilletDensity, seed_type="Millet"),
+              data.frame(period=huizui$Period, density=huizui$LCDensity, seed_type="Luxury Cereals"),
+              data.frame(period=huizui$Period, density=huizui$BeanDensity, seed_type="Bean"))
+
+ggplot(temp, aes(x=period, y=density, fill=period))+
+  geom_boxplot()+
+  facet_wrap(~seed_type, scales = "free_y")+
+  guides(fill=FALSE)+
+  theme_bw()
 ```
 
 This boxplot compares the total seed densities among the three periods. All three periods have a minimum of 0 #/L. Yangshao period seems to have the lowest median, while Longshan have the highest median. Yangshao and Longshan also have a similar inter qurtile range. In contrast, Erlitou has a more widely spread sample of total seed densities. It has a higher 3rd quartile and more outliers with very high total seed densities than the other two.
