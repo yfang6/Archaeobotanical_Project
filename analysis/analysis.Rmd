@@ -20,7 +20,7 @@ library(texreg)
 # Univariate distributions
 <a href="#top">Back to top</a>
 
-I created barplots to display the distributions of periods and feature types, as well as boxplots of total seed density, millet density, luxury cereal density, and bean density. 
+I created barplots to display the distributions of periods and feature types, as well as histograms of density. 
 
 ```{r period, echo=FALSE}
 ggplot(huizui, aes(x=Period, y=..prop.., group=1))+
@@ -31,7 +31,7 @@ ggplot(huizui, aes(x=Period, y=..prop.., group=1))+
   theme_bw()
 ```
 
-This barplot shows that there are three periods where the seeds are from--Yangshao, Longshan, and Erlitou. Most seed samples are from the Erlitou period (more than 80%). Yangshao and Longshan seeds constitute less than 10% of total seeds respectively, Yangshao seeds being the smallest proportion among those from the three periods. 
+This barplot shows that there are three periods where the seeds are from--Yangshao, Longshan, and Erlitou. Most seed samples are from the Erlitou period (more than 80%). Yangshao and Longshan seeds constitute less than 10% of total seeds respectively, Yangshao has the smallest proportion among the three periods. 
 
 ```{r feature_type, echo=FALSE}
 ggplot(huizui, aes(x=FeatureType, y=..prop.., group=1))+
@@ -42,119 +42,72 @@ ggplot(huizui, aes(x=FeatureType, y=..prop.., group=1))+
   theme_bw()
 ```
 
-This barplot shows that among the three feature types, ash pits are the most common one, representing more than half of all seed samples. Approximately 40% of seed samples are found in houses, which is the second largest feature type. Slightly less than 15% of all seed samples are from ditches.
+This barplot shows that among the three feature types, ash pits are the most common one, representing more than half of all seed samples. Approximately 40% of seed samples are found in house context that is the second largest feature type. Slightly less than 15% of all seed samples are from ditches.
 
-```{r total_seed_density, echo=FALSE}
-ggplot(huizui, aes(y=TotalSeedDensity))+
-  geom_boxplot(fill="grey", outlier.color = "red")+
-  labs(y="Total Seed Density (#/L)",
-       title="Boxplot of Total Seed Density")+
+```{r density, echo=FALSE}
+temp <- rbind(data.frame(density=huizui$TotalSeedDensity, seed_type="Total"),
+              data.frame(density=huizui$MilletDensity, seed_type="Millet"),
+              data.frame(density=huizui$LCDensity, seed_type="Luxury Cereals"),
+              data.frame(density=huizui$BeanDensity, seed_type="Bean"))
+
+ggplot(temp, aes(x=density))+
+  geom_histogram(fill="gray", col = "black")+
+  facet_wrap(~seed_type, scales = "free_x")+
+  labs(x="density (#/L)",
+       title="Histograms of Density")+
   theme_bw()
 ```
 
-This boxplot shows that the total seed densities of all seed samples has a median of ~5.5 #/L, a 1st quartile of ~3 #/L, and a 3rd Quartile of ~13 #/L. The minimum is 0 which means there is/are sample(s) with no seed found. There are several outliers with extremly large numbers of seeds found per liter of the samples, the largest reaching 60 #/L.
-
-```{r millet_density, echo=FALSE}
-ggplot(huizui, aes(y=MilletDensity))+
-  geom_boxplot(fill="grey", outlier.color = "red")+
-  labs(y="Millet Density (#/L)",
-       title="Boxplot of Millet Density")+
-  theme_bw()
-```
-
-This boxplot shows that the millet seed densities of all seed samples have a median of ~1.5 #/L, a 1st quartile of ~0.5 #/L, and a 3rd Quartile of ~4.5 #/L. The minimum is 0 which means there is/are sample(s) with no millet found. There are several outliers, the maximum reaching 36 #/L.
-
-```{r LC_density, echo=FALSE}
-ggplot(huizui, aes(y=LCDensity))+
-  geom_boxplot(fill="grey", outlier.color = "red")+
-  labs(y="Luxury Cereal Density (#/L)",
-       title="Boxplot of Luxury Cereal Density")+
-  theme_bw()
-```
-
-This boxplot shows that the luxury cereal densities are obviously lower than millet densities. The luxury creal densities of all seed samples have a minimum, a 1st quartile and a median of 0 #/L, which means there are a considerable amount (at least 50%) of seed samples with no luxury cereal seed found. The LC densities have a 3rd quartile of ~0.1 #/L and there are several outliers. About 9 samples have LC densities from 0.25 to 1 #/L, and the maximum reaches 2.2 #/L.
-
-```{r bean_density, echo=FALSE}
-ggplot(huizui, aes(y=BeanDensity))+
-  geom_boxplot(fill="grey", outlier.color = "red")+
-  labs(y="Bean Density (#/L)",
-       title="Boxplot of Bean Density")+
-  theme_bw()
-```
-
-This boxplot shows that the bean densities seem to be between millet densities and the luxury cereal densities. The bean densities of all seed samples have a 1st quartile and a minimum of 0 #/L, which means at least 25% of all seed samples have no bean found. The bean densities have a 3rd quartile of ~0.45 #/L and there are several outliers. More than 10 samples have bean densities from 1 to 4 #/L, and the maximum almost reaches 5 #/L.
+These four histograms show the densities of total seeds, millets, luxury cereals, and beans. Collectively, all four histograms have a minimum density of 0 #/L, which means there are soil samples with no seed/millet/luxury cereal/bean found. The histograms also have considerably different x scales. The total seed density histogram has a bin width of ~2 #/L. Most samples have total seed densities within the 0-20 #/L range, and the largest outlier reaches 60 #/L. The millet density histogram has a bin width of 1.25 #/L. Most samples with millets fall into the 0-10 #/L range, and the largest outlier has a millet density of more than 35 #/L. The luxury cereal density histogram has the lowest densities among the four. The bin width is ~0.07 #/L, and most samples have 0 or less than 0.07 #/L of LC densities. However, there's one sample with a LC density of more than 2.3 #/L, which is distinctively larger than other samples. The bean density histogram has the second lowest bin width of ~0.17 #/L. Most samples have bean densities within the 0-1 #/L range, and the largest outlier almost reaches 5 #/L. 
 
 # Bivariate plots
 <a href="#top">Back to top</a>
 
-```{r totalDensity_period, echo=FALSE}
-temp <- rbind(data.frame(period=huizui$Period, density=huizui$TotalSeedDensity, seed_type="Total"),
+```{r Density_period, echo=FALSE}
+temp1 <- rbind(data.frame(period=huizui$Period, density=huizui$TotalSeedDensity, seed_type="Total"),
               data.frame(period=huizui$Period, density=huizui$MilletDensity, seed_type="Millet"),
               data.frame(period=huizui$Period, density=huizui$LCDensity, seed_type="Luxury Cereals"),
               data.frame(period=huizui$Period, density=huizui$BeanDensity, seed_type="Bean"))
 
-ggplot(temp, aes(x=period, y=density, fill=period))+
+ggplot(temp1, aes(x=period, y=density, fill=period))+
   geom_boxplot()+
   facet_wrap(~seed_type, scales = "free_y")+
+  labs(x="period", y="density (#/L)",
+       title="Boxplots of Density by Period")+
   guides(fill=FALSE)+
   theme_bw()
 ```
 
-This boxplot compares the total seed densities among the three periods. All three periods have a minimum of 0 #/L. Yangshao period seems to have the lowest median, while Longshan have the highest median. Yangshao and Longshan also have a similar inter qurtile range. In contrast, Erlitou has a more widely spread sample of total seed densities. It has a higher 3rd quartile and more outliers with very high total seed densities than the other two.
+These boxplots show the densities of total seed, millet, luxury cereals, and bean by period. The y (density) scales of the four plots are very different, which means millets are the most common, and there are more beans found among the samples than luxury cereals. The total seed density boxplot has the highest densities among the three periods than other boxplots. The Yangshao period samples have the lowest 1st quartile and median, while the Erlitou period has the highest 3rd quartile and most outliers. This is understandable because the Erlitou samples constitute the largest proportion among the three periods. This is also the case for the luxury cereals density boxplot and the bean density boxplot. However, the Yangshao period seems to have the highest millet densities among the three.
 
-```{r milletDensity_period, echo=FALSE}
-boxplot(huizui$MilletDensity ~ huizui$Period, main = "Millet Density by Periods", xlab = "Periods", ylab = "Millet Density (#/L)", col = rainbow(3))
+```{r Density_featureType, echo=FALSE}
+temp2 <- rbind(data.frame(feature=huizui$FeatureType, density=huizui$TotalSeedDensity, seed_type="Total"),
+              data.frame(feature=huizui$FeatureType, density=huizui$MilletDensity, seed_type="Millet"),
+              data.frame(feature=huizui$FeatureType, density=huizui$LCDensity, seed_type="Luxury Cereals"),
+              data.frame(feature=huizui$FeatureType, density=huizui$BeanDensity, seed_type="Bean"))
+
+ggplot(temp2, aes(x=feature, y=density, fill=feature))+
+  geom_boxplot()+
+  facet_wrap(~seed_type, scales = "free_y")+
+  labs(x="feature type", y="density (#/L)",
+       title="Boxplots of Density by Feature Type")+
+  guides(fill=FALSE)+
+  theme_bw()
 ```
 
-This boxplot compares the millet densities among the three periods. All three periods have a minimum of 0 #/L. Erlitou period seems to have the lowest median, while Longshan have the highest median. Longshan and Erlitou also have a similar inter qurtile range. In contrast, Yangshao has a more widely spread sample of millet densities. It has a much higher 3rd quartile and two outliers with extremely high total seed densities that reach more than 30 #/L. Although Erlitou has the most outliers, none of them reaches 22 #/L. 
-
-```{r LC_period, echo=FALSE}
-boxplot(huizui$LCDensity ~ huizui$Period, main = "Luxury Cereal Density by Periods", xlab = "Periods", ylab = "Luxury Cereal Density (#/L)", col = rainbow(3))
-```
-
-This boxplot compares the luxury cereal seed densities among the three periods. All three periods have a minimum of 0 #/L. Interestingly, LC seeds are absent from most Yangshao period samples. There's only one observable outlier with ~0.4 #/L LC found in the sample. Longshan and Erlitou both have a median and 1st quartile of 0 #/L, while Erlitou has a lower 3rd quartile but more outliers in the 0.25-1 #/L range than Longshan. However, Longshan has an extreme outlier with a luxury cereal density of > 2 #/L. 
-
-```{r beanDensity_period, echo=FALSE}
-boxplot(huizui$BeanDensity ~ huizui$Period, main = "Bean Density by Periods", xlab = "Periods", ylab = "Bean Density (#/L)", col = rainbow(3))
-```
-
-This boxplot compares the bean densities among the three periods. All three periods have a minimum and a 1st quartile of 0 #/L. Yangshao period seems to have the lowest median reaching 0 #/L. Longshan and Erlitou periods have a similar inter qurtile range, and are more spread than Yangshao. Erlitou has a slightly higher median than Longshan, as well as more outliers with high bean densities within the range of 1-5 #/L.
-
-```{r totalDensity_featureType, echo=FALSE}
-boxplot(huizui$TotalSeedDensity ~ huizui$FeatureType, main = "Total Seed Density by Feature Types", xlab = "Feature Types", ylab = "Total Seed Density (#/L)", col = rainbow(3))
-```
-
-The boxplot shows the total seed densities among the three types of features where the seed samples come from. All three feature types have a minimum of 0 #/L. Ditch seems to have the lowest 1st quartile, median, and 3rd quartile among the three, meaning most seed samples from ditch have low seed densities. However, it has an outlier sample with the highest total seed density reaching 60 #/L. House has the largest IQR among the three, meaning the total seed densities of house samples are the most spread within the range of 0-20 #/L.
-
-```{r milletDensity_featureType, echo=FALSE}
-boxplot(huizui$MilletDensity ~ huizui$FeatureType, main = "Millet Density by Feature Types", xlab = "Feature Types", ylab = "Millet Density (#/L)", col = rainbow(3))
-```
-
-The boxplot shows the millet densities among the three types of features where the seed samples come from. All three feature types have a minimum of 0 #/L. Ditch seems to have the lowest 1st quartile, median, and 3rd quartile among the three, meaning most seed samples from ditch have low seed densities. It also has fewer outliers reaching 10 #/L than the other two feature types. House has the largest IQR among the three, meaning the total seed densities of house samples are the most spread within the range of 0-8 #/L.
-
-```{r LCDensity_featureType, echo=FALSE}
-boxplot(huizui$LCDensity ~ huizui$FeatureType, main = "Luxury Cereal Density by Feature Types", xlab = "Feature Types", ylab = "Luxury Cereal Density (#/L)", col = rainbow(3))
-```
-
-The boxplot shows the luxury cereal densities among the three types of features where the seed samples come from. All three feature types have a minimum of 0 #/L. House has 1st quartile, median, and 3rd quartile of 0 #/L, meaning most seed samples from house have no luxury cereal found. However, it has eight outliers with LC densities in the range of 0.1-1 #/L. Ash pit and ditch both have a median and 1st quartile of 0 #/L. They have a similar IQR but Ash pit has more outliers and an extreme outlier reaching 2.2 #/L of LC density than ditch.
-
-```{r beanDensity_featureType, echo=FALSE}
-boxplot(huizui$BeanDensity ~ huizui$FeatureType, main = "Bean Density by Feature Types", xlab = "Feature Types", ylab = "Bean Density (#/L)", col = rainbow(3))
-```
-
-The boxplot shows the bean densities among the three types of features where the seed samples come from. All three feature types have a minimum of 0 #/L. House seems to have the lowest 1st quartile, median, and 3rd quartile among the three, meaning most seed samples from ditch have low seed densities. Ditch has the largest IQR among the three, meaning the total seed densities of house samples are the most spread within the range of 0-0.7 #/L. Ash pit has a slightly higher median and more outliers than ditch.
+These boxplots show the densities of total seed, millet, luxury cereals, and bean by feature type. The y (density) scales of the four plots are very different, which means millets are the most common, and there are more beans found among the samples than luxury cereals. The total seed density boxplot has the highest densities among the three periods than other boxplots. House seems to be the feature from which most seeds especially millets are found. However, luxury cereals and beans are more commonly found in ash pits than in the other two feature types. 
 
 # Poisson models
 <a href="#top">Back to top</a>
 
 ```{r total_density_models, echo=FALSE, results="asis"}
-total1 <- glm(TotalSeedNo~Period, family=poisson, offset=log(Vol), data=huizui)
+total1 <- glm(TotalSeedNo~Period, family=quasipoisson, offset=log(Vol), data=huizui)
 
-total2 <- glm(TotalSeedNo~FeatureType, family=poisson, offset=log(Vol), data=huizui)
+total2 <- glm(TotalSeedNo~FeatureType, family=quasipoisson, offset=log(Vol), data=huizui)
 
-total3 <- glm(TotalSeedNo~Period+FeatureType, family=poisson, offset=log(Vol), data=huizui)
+total3 <- glm(TotalSeedNo~Period+FeatureType, family=quasipoisson, offset=log(Vol), data=huizui)
 
-total4 <- glm(TotalSeedNo~Period*FeatureType, family=poisson, offset=log(Vol), data=huizui)
+total4 <- glm(TotalSeedNo~Period*FeatureType, family=quasipoisson, offset=log(Vol), data=huizui)
 
 htmlreg(list(total1, total2, total3, total4),
           custom.coef.names = c("Intercept",
@@ -165,31 +118,31 @@ htmlreg(list(total1, total2, total3, total4),
                              "Yangshao:Ditch",
                              "Longshan:House",
                              "Yangshao:House"),
-          caption="Poisson models of total seed densities by period and feature types",
+          caption="Quasi-poisson models of total seed densities by period and feature types",
           caption.above = TRUE)
        
 ```
 
-For total seed densities as the dependent variable, I created four poisson models with different independent variables. 
+For total seed densities as the dependent variable, I created four quasi-poisson models with different independent variables. 
 
-Model 1 has Period as the only independent variable. It shows that the Erlitou period soil samples have a total seed density of 2.56 #/L on average; the Longshan period samples have a total seed density of 0.34 #/L less than Erlitou samples, on average; and the Yangshao period samples have a total seed density of 0.35 #/L less than Erlitou samples, on average. All coefficients for Model 1 are statistically significant. 
+Model 1 has Period as the only independent variable. It shows that the Erlitou period soil samples have a total seed density of 12.93 #/L on average; the Longshan period samples have a total seed density of 29% less than Erlitou samples, on average; and the Yangshao period samples have a total seed density of 30% less than Erlitou samples, on average. Only the intercept is statistically significant. 
 
-Model 2 has feature types as the only independent variable. It shows that soil samples from ash pits have a total seed density of 2.14 #/L on average; samples from ditches have a total seed density of 0.05 #/L less than ash pit samples, on average; and samples from houses have a total seed density of 0.28 #/L more than ash pit samples, on average. Only the intercept and the coefficient of House for Model 2 are statistically significant.
+Model 2 has feature types as the only independent variable. It shows that soil samples from ash pits have a total seed density of 8.5 #/L on average; samples from ditches have a total seed density of 5% less than ash pit samples, on average; and samples from houses have a total seed density of 32% more than ash pit samples, on average. Only the intercept is statistically significant.
 
-Model 3 has both perid and feature types as independent variables. It shows that Erlitou soil samples from ash pits have a total seed density of 2.50 #/L on average. Within the same feature type, the Longshan period samples have a total seed density of 0.33 #/L less than Erlitou samples, on average; and the Yangshao period samples have a total seed density of 0.41 #/L less than Erlitou samples, on average. Within the same period, samples from ditches have a total seed density of 0.09 #/L less than ash pit samples, on average; and samples from houses have a total seed density of 0.30 #/L more than ash pit samples, on average. All coefficients for Model 3 are statistically significant. 
+Model 3 has both perid and feature types as independent variables. It shows that Erlitou soil samples from ash pits have a total seed density of 12.18 #/L on average. Within the same feature type, the Longshan period samples have a total seed density of 29% less than Erlitou samples, on average; and the Yangshao period samples have a total seed density of 34% less than Erlitou samples, on average. Within the same period, samples from ditches have a total seed density of 9% less than ash pit samples, on average; and samples from houses have a total seed density of 35% more than ash pit samples, on average. Only the intercept is statistically significant.
 
-Model 4 added the interaction between perid and feature types in addition to Model 3. It shows that Erlitou soil samples from ash pits have a total seed density of 2.61 #/L on average. Among samples from ash pits, the Longshan period samples have a total seed density of 0.24 #/L less than Erlitou samples, on average; and the Yangshao period samples have a total seed density of 0.57 #/L less than Erlitou samples, on average. Among the Erlitou samples, samples from ditches have a total seed density of 2.18 #/L less than ash pit samples, on average; and samples from houses have a total seed density of 0.55 #/L more than ash pit samples, on average. The difference in total seed densities between Yangshao and Erlitou samples is 2.43 #/L more among samples from ditches than those from ash pits. The difference in total seed densities between Longshan and Erlitou samples is 1.88 #/L less among samples from houses than those from ash pits. The difference in total seed densities between Yangshao and Erlitou samples is 2.21 #/L less among samples from houses than those from ash pits. Only the coefficient of the Yangshao-house interaction for Model 4 is statistically significant. 
+Model 4 added the interaction between perid and feature types in addition to Model 3. It shows that Erlitou soil samples from ash pits have a total seed density of 13.6 #/L on average. Among samples from ash pits, the Longshan period samples have a total seed density of 22% less than Erlitou samples, on average; and the Yangshao period samples have a total seed density of 44% less than Erlitou samples, on average. Among the Erlitou samples, samples from ditches have a total seed density of 89% less than ash pit samples, on average; and samples from houses have a total seed density of 73% more than ash pit samples, on average. Among ditch samples, the total seed density from the Yangshao period is 28% more than that from the Erlitou period. Among house samples, the total seed density from the Longshan period is 74% less than that from the Erlitou period. Among house samples, the total seed density from the Yangshao period is 40% more than that from the Erlitou period. No coefficient in Model 4 is statistically significant. 
 
 ```{r millet_density_models, echo=FALSE, results="asis"}
-millet1 <- glm(Millets~Period, family=poisson, offset=log(Vol), data=huizui)
+millet1 <- glm(Millets~Period, family=quasipoisson, offset=log(Vol), data=huizui)
 
-millet2 <- glm(Millets~FeatureType, family=poisson, offset=log(Vol), data=huizui)
+millet2 <- glm(Millets~FeatureType, family=quasipoisson, offset=log(Vol), data=huizui)
 
-millet3 <- glm(Millets~Period+FeatureType, family=poisson, offset=log(Vol), data=huizui)
+millet3 <- glm(Millets~Period+FeatureType, family=quasipoisson, offset=log(Vol), data=huizui)
 
-millet4 <- glm(Millets~Period*FeatureType, family=poisson, offset=log(Vol), data=huizui)
+millet4 <- glm(Millets~Period*FeatureType, family=quasipoisson, offset=log(Vol), data=huizui)
 
-screenreg(list(millet1, millet2, millet3, millet4),
+htmlreg(list(millet1, millet2, millet3, millet4),
           custom.coef.names = c("Intercept",
                              "Longshan Period",
                              "Yangshao Period",
@@ -198,29 +151,29 @@ screenreg(list(millet1, millet2, millet3, millet4),
                              "Yangshao:Ditch",
                              "Longshan:House",
                              "Yangshao:House"),
-          caption="Poisson models of millet densities by period and feature types",
+          caption="Quasi-poisson models of millet densities by period and feature types",
           caption.above = TRUE)
        
 ```
 
-For millet densities as the dependent variable, I created four poisson models with different independent variables. 
+For millet densities as the dependent variable, I created four quasi-poisson models with different independent variables. 
 
-Model 1 has Period as the only independent variable. It shows that the Erlitou period soil samples have a millet density of 2.32 #/L on average; the Longshan period samples have a millet density of 0.78 #/L less than Erlitou samples, on average; and the Yangshao period samples have a millet density of 1.16 #/L less than Erlitou samples, on average. All coefficients for Model 1 are statistically significant. 
+Model 1 has Period as the only independent variable. It shows that the Erlitou period soil samples have a millet density of 10.17 #/L on average; the Longshan period samples have a millet density of 55% less than Erlitou samples, on average; and the Yangshao period samples have a millet density of 69% less than Erlitou samples, on average. Only the intercept and the coefficient of Yangshao period are statistically significant. 
 
-Model 2 has feature types as the only independent variable. It shows that soil samples from ash pits have a millet density of 1.23 #/L on average; samples from ditches have a millet density of 0.43 #/L less than ash pit samples, on average; and samples from houses have a milllet density of 0.4 #/L more than ash pit samples, on average. All coefficients for Model 2 are statistically significant.
+Model 2 has feature types as the only independent variable. It shows that soil samples from ash pits have a millet density of 3.42 #/L on average; samples from ditches have a millet density of 35% less than ash pit samples, on average; and samples from houses have a millet density of 49% more than ash pit samples, on average. Only the intercept is statistically significant.
 
-Model 3 has both perid and feature types as independent variables. It shows that Erlitou soil samples from ash pits have a millet density of 2.28 #/L on average. Within the same feature type, the Longshan period samples have a millet density of 0.84 #/L less than Erlitou samples, on average; and the Yangshao period samples have a millet density of 1.3 #/L less than Erlitou samples, on average. Within the same period, samples from ditches have a millet density of 0.61 #/L less than ash pit samples, on average; and samples from houses have a millet density of 0.48 #/L more than ash pit samples, on average. All coefficients for Model 3 are statistically significant. 
+Model 3 has both perid and feature types as independent variables. It shows that Erlitou soil samples from ash pits have a millet density of 9.77 #/L on average. Within the same feature type, the Longshan period samples have a millet density of 57% less than Erlitou samples, on average; and the Yangshao period samples have a millet density of 93% less than Erlitou samples, on average. Within the same period, samples from ditches have a millet density of 46% less than ash pit samples, on average; and samples from houses have a millet density of 61% more than ash pit samples, on average. Only the intercept and the coefficient of Yangshao period are statistically significant. 
 
-Model 4 added the interaction between perid and feature types in addition to Model 3. It shows that Erlitou soil samples from ash pits have a milllet density of 2.44 #/L on average. Among samples from ash pits, the Longshan period samples have a millet density of 0.8 #/L less than Erlitou samples, on average; and the Yangshao period samples have a millet density of 1.61 #/L less than Erlitou samples, on average. Among the Erlitou samples, samples from ditches have a millet density of 2.88 #/L less than ash pit samples, on average; and samples from houses have a millet density of 0.41 #/L more than ash pit samples, on average. The difference in millet densities between Yangshao and Erlitou samples is 3.01 #/L more among samples from ditches than those from ash pits. The difference in millet densities between Longshan and Erlitou samples is 1.26 #/L less among samples from houses than those from ash pits. The difference in millet densities between Yangshao and Erlitou samples is 0.24 #/L more among samples from houses than those from ash pits. Only the coefficient of the Yangshao-house interaction for Model 4 is statistically significant.
+Model 4 added the interaction between perid and feature types in addition to Model 3. It shows that Erlitou soil samples from ash pits have a millet density of 11.47 #/L on average. Among samples from ash pits, the Longshan period samples have a millet density of 56% less than Erlitou samples, on average; and the Yangshao period samples have a millet density of 81% less than Erlitou samples, on average. Among the Erlitou samples, samples from ditches have a millet density of 95% less than ash pit samples, on average; and samples from houses have a millet density of 50% more than ash pit samples, on average. Among ditch samples, the millet density from the Yangshao period is 14% more than that from the Erlitou period. Among house samples, the millet density from the Longshan period is 58% less than that from the Erlitou period. Among house samples, the millet density from the Yangshao period is 91% more than that from the Erlitou period. No coefficient in Model 4 is statistically significant.
 
 ```{r LC_density_models, echo=FALSE, results="asis"}
-LC1 <- glm(LuxuryCereal~Period, family=poisson, offset=log(Vol), data=huizui)
+LC1 <- glm(LuxuryCereal~Period, family=quasipoisson, offset=log(Vol), data=huizui)
 
-LC2 <- glm(LuxuryCereal~FeatureType, family=poisson, offset=log(Vol), data=huizui)
+LC2 <- glm(LuxuryCereal~FeatureType, family=quasipoisson, offset=log(Vol), data=huizui)
 
-LC3 <- glm(LuxuryCereal~Period+FeatureType, family=poisson, offset=log(Vol), data=huizui)
+LC3 <- glm(LuxuryCereal~Period+FeatureType, family=quasipoisson, offset=log(Vol), data=huizui)
 
-LC4 <- glm(LuxuryCereal~Period*FeatureType, family=poisson, offset=log(Vol), data=huizui)
+LC4 <- glm(LuxuryCereal~Period*FeatureType, family=quasipoisson, offset=log(Vol), data=huizui)
 
 htmlreg(list(LC1, LC2, LC3, LC4),
           custom.coef.names = c("Intercept",
@@ -231,19 +184,29 @@ htmlreg(list(LC1, LC2, LC3, LC4),
                              "Yangshao:Ditch",
                              "Longshan:House",
                              "Yangshao:House"),
-          caption="Poisson models of luxury cereal densities by period and feature types",
+          caption="Quasi-poisson models of luxury cereal densities by period and feature types",
           caption.above = TRUE)
        
 ```
 
+For luxury cereal (LC) densities as the dependent variable, I created four quasi-poisson models with different independent variables. 
+
+Model 1 has Period as the only independent variable. It shows that the Erlitou period soil samples have a LC density of 0.04 #/L on average; the Longshan period samples have a LC density of 400% more than Erlitou samples, on average; and the Yangshao period samples have a LC density of 116% more than Erlitou samples, on average. Only the intercept is statistically significant. 
+
+Model 2 has feature types as the only independent variable. It shows that soil samples from ash pits have a LC density of 0.13 #/L on average; samples from ditches have a LC density of 46% less than ash pit samples, on average; and samples from houses have a LC density of 43% less than ash pit samples, on average. Only the intercept is statistically significant.
+
+Model 3 has both perid and feature types as independent variables. It shows that Erlitou soil samples from ash pits have a LC density of 0.06 #/L on average. Within the same feature type, the Longshan period samples have a LC density of 335% more than Erlitou samples, on average; and the Yangshao period samples have a LC density of 116% more than Erlitou samples, on average. Within the same period, samples from ditches have a LC density of 34% less than ash pit samples, on average; and samples from houses have a LC density of 39% less than ash pit samples, on average. Only the intercept is statistically significant.
+
+Model 4 added the interaction between perid and feature types in addition to Model 3. It shows that Erlitou soil samples from ash pits have a LC density of 0.1 #/L on average. Among samples from ash pits, the Longshan period samples have a LC density of 189% more than Erlitou samples, on average; and the Yangshao period samples have a LC density of 17% more than Erlitou samples, on average. Among the Erlitou samples, samples from ditches have an almost identical LC density as ash pit samples, on average; and samples from houses also have the same LC density as ash pit samples, on average. Among ditch samples, the LC density from the Yangshao period is 20% less than that from the Erlitou period. Among house samples, the LC density from the Longshan period is the same as that from the Erlitou period. Among house samples, the LC density from the Yangshao period is 26% less than that from the Erlitou period. Only the intercept is statistically significant.
+
 ```{r bean_density_models, echo=FALSE, results="asis"}
-bean1 <- glm(Bean~Period, family=poisson, offset=log(Vol), data=huizui)
+bean1 <- glm(Bean~Period, family=quasipoisson, offset=log(Vol), data=huizui)
 
-bean2 <- glm(Bean~FeatureType, family=poisson, offset=log(Vol), data=huizui)
+bean2 <- glm(Bean~FeatureType, family=quasipoisson, offset=log(Vol), data=huizui)
 
-bean3 <- glm(Bean~Period+FeatureType, family=poisson, offset=log(Vol), data=huizui)
+bean3 <- glm(Bean~Period+FeatureType, family=quasipoisson, offset=log(Vol), data=huizui)
 
-bean4 <- glm(Bean~Period*FeatureType, family=poisson, offset=log(Vol), data=huizui)
+bean4 <- glm(Bean~Period*FeatureType, family=quasipoisson, offset=log(Vol), data=huizui)
 
 htmlreg(list(bean1, bean2, bean3, bean4),
           custom.coef.names = c("Intercept",
@@ -254,7 +217,17 @@ htmlreg(list(bean1, bean2, bean3, bean4),
                              "Yangshao:Ditch",
                              "Longshan:House",
                              "Yangshao:House"),
-          caption="Poisson models of bean densities by period and feature types",
+          caption="Quasi-poisson models of bean densities by period and feature types",
           caption.above = TRUE)
        
 ```
+
+For bean densities as the dependent variable, I created four quasi-poisson models with different independent variables. 
+
+Model 1 has Period as the only independent variable. It shows that the Erlitou period soil samples have a bean density of 0.06 #/L on average; the Longshan period samples have a bean density of 274% more than Erlitou samples, on average; and the Yangshao period samples have a bean density of 569% more than Erlitou samples, on average. No coefficient is statistically significant. 
+
+Model 2 has feature types as the only independent variable. It shows that soil samples from ash pits have a bean density of 0.51 #/L on average; samples from ditches have a bean density of 23% less than ash pit samples, on average; and samples from houses have a bean density of 71% less than ash pit samples, on average. Only the intercept and the coefficient of House are statistically significant.
+
+Model 3 has both perid and feature types as independent variables. It shows that Erlitou soil samples from ash pits have a bean density of 0.08 #/L on average. Within the same feature type, the Longshan period samples have a bean density of 225% more than Erlitou samples, on average; and the Yangshao period samples have a bean density of 639% more than Erlitou samples, on average. Within the same period, samples from ditches have a bean density of 19% less than ash pit samples, on average; and samples from houses have a bean density of 74% less than ash pit samples, on average. Only the coefficient of House is statistically significant. 
+
+Model 4 added the interaction between perid and feature types in addition to Model 3. It shows that Erlitou soil samples from ash pits have a bean density of 0.06 #/L on average. Among samples from ash pits, the Longshan period samples have a bean density of 267% more than Erlitou samples, on average; and the Yangshao period samples have a bean density of 839% more than Erlitou samples, on average. Among the Erlitou samples, samples from ditches have a bean density of 9% less than ash pit samples, on average; and samples from houses have a bean density of 9% less than ash pit samples, on average. Among ditch samples, the bean density from the Yangshao period is 20% less than that from the Erlitou period. Among house samples, the bean density from the Longshan period is 16% less than that from the Erlitou period. Among house samples, the bean density from the Yangshao period is 75% less than that from the Erlitou period. No coefficient in Model 4 is statistically significant.
